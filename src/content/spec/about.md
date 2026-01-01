@@ -1,9 +1,15 @@
-# About
-This is the demo site for [Fuwari](https://github.com/saicaca/fuwari).
+# Hi，我是无大人生！
 
-::github{repo="saicaca/fuwari"}
+一个整天想着摸鱼的初中生，也一个编程爱好者。正在学习Python、C++、Xaml，希望之后能开发一些实用、赤石、逆天的软件。
 
-> ### Sources of images used in this site
-> - [Unsplash](https://unsplash.com/)
-> - [星と少女](https://www.pixiv.net/artworks/108916539) by [Stella](https://www.pixiv.net/users/93273965)
-> - [Rabbit - v1.4 Showcase](https://civitai.com/posts/586908) by [Rabbit_YourMajesty](https://civitai.com/user/Rabbit_YourMajesty)
+
+
+# **:(**
+
+**你的电脑遇到问题，需要重新启动。**
+
+**我们只能收集某些错误信息，然后为你重新启动。（完成 11.14514%）**
+
+
+
+如果你想了解更多信息，则可以稍后在线搜索此错误：114514
