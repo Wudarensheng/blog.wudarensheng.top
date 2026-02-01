@@ -150,3 +150,7 @@
     }
   }
 }
+
+.btn-plain.scale-animation.rounded-lg.h-11.w-11.active\:scale-90 {
+    display: none; /* 或者 visibility: hidden; */
+}

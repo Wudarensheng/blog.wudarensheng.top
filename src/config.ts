@@ -59,7 +59,7 @@ export const profileConfig: ProfileConfig = {
 	links: [
 		
 		{
-			name: "Steam",
+			name: "Bilibili",
 			icon: "fa6-brands:bilibili",
 			url: "https://space.bilibili.com/3546673733175817",
 		},
