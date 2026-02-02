@@ -33,7 +33,7 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		// Leave this array empty to use the default favicon
 		 {
-		   src: 'https://i1.hdslb.com/bfs/face/e26c34b69fa7ce27fa92698a41e9fdf19e91b531.jpg@240w_240h_1c_1s_!web-avatar-search-videos.webp',    // Path of the favicon, relative to the /public directory
+		   src: 'https://i1.hdslb.com/bfs/face/e26c34b69fa7ce27fa92698a41e9fdf19e91b531.jpg',    // Path of the favicon, relative to the /public directory
 		  theme: 'light',              // (Optional) Either 'light' or 'dark', set only if you have different favicons for light and dark mode
 		   sizes: '32x32',              // (Optional) Size of the favicon, set only if you have favicons of different sizes
 		}
@@ -54,7 +54,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "https://avatars.githubusercontent.com/u/198721055?v=4", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "https://i1.hdslb.com/bfs/face/e26c34b69fa7ce27fa92698a41e9fdf19e91b531.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "无大人生",
 	bio: "远赴人间惊鸿宴，一睹人间盛世颜。",
 	links: [
