@@ -81,6 +81,18 @@ const bannerOffset =
     data-overlayscrollbars-initialize
 >
   <head>
+    <script>
+      // 强制设置为深色主题
+      (function() {
+        // 1. 立即为根元素添加 'dark' 类
+        document.documentElement.classList.add('dark');
+        // 2. 将用户选择持久化到本地存储，防止其他脚本覆盖
+        localStorage.setItem('theme', 'dark');
+        // 3. 可选：覆盖可能存在的其他主题逻辑
+        window.__theme = 'dark';
+        console.log('主题已强制锁定为深色模式。');
+      })();
+    </script>
 
     <title>{pageTitle}</title>
 
