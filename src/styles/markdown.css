@@ -1,9 +1,20 @@
+/* 自定义类定义 */
 .link {
   @apply relative bg-none font-medium text-[var(--primary)]
   underline decoration-[var(--link-underline)] decoration-1 decoration-dashed underline-offset-4;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   display: inline-block;
+}
+
+.btn-regular-dark {
+  @apply bg-[var(--btn-regular-bg)] text-[var(--btn-regular-text)] 
+  border border-[var(--btn-regular-border)] 
+  hover:bg-[var(--btn-regular-bg-hover)] hover:text-[var(--btn-regular-text-hover)] 
+  dark:bg-[var(--btn-regular-bg-dark)] dark:text-[var(--btn-regular-text-dark)]
+  dark:border-[var(--btn-regular-border-dark)]
+  dark:hover:bg-[var(--btn-regular-bg-hover-dark)] dark:hover:text-[var(--btn-regular-text-hover-dark)]
+  transition-colors duration-200;
 }
 
 .custom-md {
