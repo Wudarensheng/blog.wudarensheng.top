@@ -18,15 +18,15 @@ lang: ''
 
 2.来到这个页面后，记得点击下方的按钮助力一下。
 
-![](https://blog.wudarensheng.top/p/aliyun-esa-free-cdn/aliyunesa1.PNG)
+![](https://img.blog.wudarensheng.top/posts/aliyun-esa-free-cdn/aliyunesa1.PNG)
 
 3.找到这个立即试用按钮点进去。
 
-![](https://blog.wudarensheng.top/p/aliyun-esa-free-cdn/aliyunesa2.PNG))
+![](https://img.blog.wudarensheng.top/posts/aliyun-esa-free-cdn/aliyunesa2.PNG))
 
 4.进来后点击左边的这个“免费版”，这个是永久免费的，建议把购买时长改为一年并且把自动续费勾上（由于是永久免费的，所以并不会扣你的money）。
 
-![](https://blog.wudarensheng.top/p/aliyun-esa-free-cdn/aliyunesa3.PNG))
+![](https://img.blog.wudarensheng.top/posts/aliyun-esa-free-cdn/aliyunesa3.PNG))
 
 5.点击立即购买，支付0.00元后来到esa[控制台](esa.console.aliyun.com)，在这里可以看到你刚才购买的免费套餐。
 
@@ -46,4 +46,4 @@ lang: ''
 
 4.这个延迟很高，和Cloudflare差不多（也不知道能不能优选）
 
-![](https://blog.wudarensheng.top/p/aliyun-esa-free-cdn/esatest.PNG))
+![](https://img.blog.wudarensheng.top/posts/aliyun-esa-free-cdn/esatest.png))
