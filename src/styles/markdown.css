@@ -1,3 +1,13 @@
+@layer components {
+  .link {
+    @apply relative bg-none font-medium text-[var(--primary)]
+    underline decoration-[var(--link-underline)] decoration-1 decoration-dashed underline-offset-4;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    display: inline-block;
+  }
+}
+
 .custom-md {
     h1 {
         @apply text-3xl;
@@ -20,11 +30,7 @@
     }
 
     a:not(.no-styling) {
-        @apply relative bg-none link font-medium text-[var(--primary)]
-        underline decoration-[var(--link-underline)] decoration-1 decoration-dashed underline-offset-4;
-        box-decoration-break: clone;
-        -webkit-box-decoration-break: clone;
-        display: inline-block;
+        @apply link;
     
         &:hover, &:active {
             @apply decoration-transparent;
