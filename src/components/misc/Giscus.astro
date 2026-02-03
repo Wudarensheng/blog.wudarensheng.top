@@ -24,16 +24,33 @@ const {
 } = Astro.props;
 ---
 
-<div id="giscus-container"></div>
+<div id="giscus-container" class="giscus-comments"></div>
 
 <script define:vars={{ repo, repoId, category, categoryId, mapping, reactionsEnabled, emitMetadata, inputPosition, lang }}>
+  let giscusLoaded = false;
+  let giscusScript = null;
+  
+  // 获取当前主题
+  function getCurrentTheme() {
+    return document.documentElement.classList.contains('dark') ? 'dark_dimmed' : 'light';
+  }
+  
+  // 加载 Giscus
   function loadGiscus() {
     const container = document.getElementById('giscus-container');
     if (!container) return;
-
-    const isDark = document.documentElement.classList.contains('dark');
-    const theme = isDark ? 'dark' : 'light';
-
+    
+    // 如果已加载，先移除
+    if (giscusScript && giscusScript.parentNode) {
+      giscusScript.parentNode.removeChild(giscusScript);
+      giscusScript = null;
+    }
+    
+    // 清除现有内容
+    container.innerHTML = '';
+    
+    const theme = getCurrentTheme();
+    
     const script = document.createElement('script');
     script.src = 'https://giscus.app/client.js';
     script.setAttribute('data-repo', repo);
@@ -48,48 +65,87 @@ const {
     script.setAttribute('data-theme', theme);
     script.setAttribute('data-lang', lang);
     script.setAttribute('data-loading', 'lazy');
-    script.crossOrigin = 'anonymous';
+    script.setAttribute('crossorigin', 'anonymous');
     script.async = true;
-
+    script.defer = true;
+    
+    // 添加错误处理
+    script.onerror = function() {
+      console.error('Failed to load Giscus script');
+      // 可以显示错误信息给用户
+      container.innerHTML = '<div class="text-center p-4 text-gray-500">评论加载失败，请刷新页面重试</div>';
+    };
+    
+    script.onload = function() {
+      giscusLoaded = true;
+      console.log('Giscus loaded successfully');
+    };
+    
     container.appendChild(script);
+    giscusScript = script;
   }
-
-  // 监听主题变化
-  function updateGiscusTheme() {
-    const giscusFrame = document.querySelector('iframe[src*="giscus"]');
-    if (giscusFrame) {
-      const isDark = document.documentElement.classList.contains('dark');
-      const theme = isDark ? 'dark' : 'light';
-
-      giscusFrame.contentWindow.postMessage({
-        giscus: {
-          setConfig: {
-            theme: theme
-          }
-        }
-      }, 'https://giscus.app');
+  
+  // 重新加载 Giscus（主题变化时使用）
+  function reloadGiscus() {
+    if (giscusLoaded) {
+      giscusLoaded = false;
     }
-  }
-
-  // 监听DOM变化来检测主题切换
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-        updateGiscusTheme();
-      }
-    });
-  });
-
-  // 页面加载时初始化
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadGiscus);
-  } else {
     loadGiscus();
   }
-
-  // 开始观察主题变化
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['class']
-  });
+  
+  // 监听主题变化
+  function setupThemeListener() {
+    // 使用更可靠的方法检测主题变化
+    let themeTimer = null;
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          // 防抖处理，避免频繁重载
+          clearTimeout(themeTimer);
+          themeTimer = setTimeout(() => {
+            reloadGiscus();
+          }, 500);
+          break;
+        }
+      }
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    // 也监听 storage 事件，以便处理来自其他地方的 theme 变化
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'theme' || event.key === 'color-theme') {
+        reloadGiscus();
+      }
+    });
+  }
+  
+  // 页面加载时初始化
+  function initGiscus() {
+    // 等待一小段时间确保 DOM 完全加载
+    setTimeout(() => {
+      loadGiscus();
+      setupThemeListener();
+    }, 300);
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGiscus);
+  } else {
+    initGiscus();
+  }
 </script>
+
+<style>
+  .giscus-comments {
+    min-height: 300px; /* 预留高度，避免布局抖动 */
+  }
+  
+  .giscus-comments iframe {
+    width: 100% !important;
+    border: none;
+  }
+</style>
