@@ -2,7 +2,7 @@
 import path from "node:path";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
-import Giscus from "../../components/misc/Giscus.astro"; // 确保这个路径正确
+import GiscusComment from "../../components/misc/GiscusComment.astro";// 确保这个路径正确
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
@@ -109,24 +109,7 @@ const jsonLd = {
 
             {licenseConfig.enable && <License title={entry.data.title} slug={entry.slug} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
             
-            <!-- ============ 在这里添加 Giscus 评论组件 ============ -->
-            <div class="mb-6 rounded-xl card-base px-6 py-4 onload-animation">
-                <h2 class="text-xl font-bold mb-4 text-black/90 dark:text-white/90">
-                    {i18n(I18nKey.comments) || "评论"}
-                </h2>
-                <Giscus 
-                    repo="Wudarensheng/blog-giscus"
-                    repoId="R_kgDOQNnTrw"
-                    category="Announcements"
-                    categoryId="DIC_kwDOQNnTr84CxWgP"
-                    mapping="pathname"
-                    reactionsEnabled={true}
-                    emitMetadata={false}
-                    inputPosition="bottom"
-                    lang={entry.data.lang || "zh-CN"}
-                />
-            </div>
-            
+           <GiscusComment repo="Wudarensheng/blog-giscus" repoId="R_kgDOQNnTrw" category="Announcements" categoryId="DIC_kwDOQNnTr84CxWgP" />
         </div>
     </div>
 
