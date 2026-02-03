@@ -4,7 +4,7 @@ published: 2026-02-02
 description: '永久免费的随机图API!'
 image: ''
 tags: [随机图]
-category: '教程'
+category: '白嫖'
 draft: false 
 lang: ''
 ---

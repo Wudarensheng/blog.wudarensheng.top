@@ -4,7 +4,7 @@ published: 2025-12-28
 description: '阿里云也出免费的CDN了？'
 image: ''
 tags: [ESA]
-category: 'CDN'
+category: '白嫖'
 draft: false 
 lang: ''
 ---
