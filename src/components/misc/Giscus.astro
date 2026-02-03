@@ -27,30 +27,66 @@ const {
 <div id="giscus-container" class="giscus-comments"></div>
 
 <script define:vars={{ repo, repoId, category, categoryId, mapping, reactionsEnabled, emitMetadata, inputPosition, lang }}>
-  let giscusLoaded = false;
   let giscusScript = null;
+  let themeObserver = null;
   
   // 获取当前主题
   function getCurrentTheme() {
     return document.documentElement.classList.contains('dark') ? 'dark_dimmed' : 'light';
   }
   
+  // 获取有效的 origin
+  function getValidOrigin() {
+    const currentOrigin = window.location.origin;
+    const hostname = window.location.hostname;
+    
+    // 检查是否是临时域名（Cloudflare Pages, Vercel, Netlify 等）
+    const isTempDomain = 
+      hostname.includes('cloudflarepages') || 
+      hostname.includes('vercel.app') || 
+      hostname.includes('netlify.app') ||
+      hostname.includes('web.app') ||
+      hostname.includes('firebaseapp.com') ||
+      /^[a-f0-9]{8,}(-[a-f0-9]{4,}){0,}\.[a-z0-9-]+\.(pages|vercel|netlify)\.app$/i.test(hostname) ||
+      /^[a-f0-9]{12,}$/i.test(hostname.replace(/\./g, '')) || // 纯哈希域名
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname.startsWith('192.168.') ||
+      hostname.startsWith('10.');
+    
+    // 如果是临时域名，使用 GitHub Pages 域名
+    if (isTempDomain) {
+      // 从 repo 提取用户名
+      const repoParts = repo.split('/');
+      if (repoParts.length >= 2) {
+        const userName = repoParts[0];
+        return `https://${userName}.github.io`;
+      }
+      // 如果无法提取，使用默认值
+      return 'https://wudarensheng.github.io';
+    }
+    
+    // 否则使用当前域名
+    return currentOrigin;
+  }
+  
   // 加载 Giscus
   function loadGiscus() {
     const container = document.getElementById('giscus-container');
-    if (!container) return;
-    
-    // 如果已加载，先移除
-    if (giscusScript && giscusScript.parentNode) {
-      giscusScript.parentNode.removeChild(giscusScript);
-      giscusScript = null;
+    if (!container) {
+      console.error('Giscus container not found');
+      return;
     }
     
     // 清除现有内容
     container.innerHTML = '';
     
     const theme = getCurrentTheme();
+    const validOrigin = getValidOrigin();
     
+    console.log('Loading Giscus with origin:', validOrigin, 'theme:', theme);
+    
+    // 创建 Giscus 脚本
     const script = document.createElement('script');
     script.src = 'https://giscus.app/client.js';
     script.setAttribute('data-repo', repo);
@@ -65,20 +101,46 @@ const {
     script.setAttribute('data-theme', theme);
     script.setAttribute('data-lang', lang);
     script.setAttribute('data-loading', 'lazy');
+    
+    // 关键：手动设置有效的 origin
+    script.setAttribute('data-origin', validOrigin);
+    
     script.setAttribute('crossorigin', 'anonymous');
     script.async = true;
     script.defer = true;
     
-    // 添加错误处理
-    script.onerror = function() {
-      console.error('Failed to load Giscus script');
-      // 可以显示错误信息给用户
-      container.innerHTML = '<div class="text-center p-4 text-gray-500">评论加载失败，请刷新页面重试</div>';
+    // 错误处理
+    script.onerror = function(error) {
+      console.error('Failed to load Giscus script:', error);
+      container.innerHTML = `
+        <div class="giscus-error text-center p-6 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div class="text-gray-600 dark:text-gray-400 mb-3">
+            <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="font-medium">评论加载失败</p>
+            <p class="text-sm mt-1">当前域名: ${window.location.hostname}</p>
+            <p class="text-sm">使用的 Origin: ${validOrigin}</p>
+          </div>
+          <button onclick="loadGiscus()" class="retry-btn px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
+            重新加载评论
+          </button>
+        </div>
+      `;
     };
     
     script.onload = function() {
-      giscusLoaded = true;
       console.log('Giscus loaded successfully');
+      // 监听 iframe 加载完成
+      setTimeout(() => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (iframe) {
+          console.log('Giscus iframe found');
+          iframe.onload = function() {
+            console.log('Giscus iframe content loaded');
+          };
+        }
+      }, 1000);
     };
     
     container.appendChild(script);
@@ -87,22 +149,30 @@ const {
   
   // 重新加载 Giscus（主题变化时使用）
   function reloadGiscus() {
-    if (giscusLoaded) {
-      giscusLoaded = false;
+    if (giscusScript && giscusScript.parentNode) {
+      giscusScript.parentNode.removeChild(giscusScript);
     }
-    loadGiscus();
+    
+    // 等待一小段时间确保脚本完全卸载
+    setTimeout(() => {
+      loadGiscus();
+    }, 300);
   }
   
   // 监听主题变化
   function setupThemeListener() {
-    // 使用更可靠的方法检测主题变化
+    if (themeObserver) {
+      themeObserver.disconnect();
+    }
+    
     let themeTimer = null;
-    const observer = new MutationObserver((mutations) => {
+    themeObserver = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
           // 防抖处理，避免频繁重载
           clearTimeout(themeTimer);
           themeTimer = setTimeout(() => {
+            console.log('Theme changed, reloading Giscus');
             reloadGiscus();
           }, 500);
           break;
@@ -110,12 +180,12 @@ const {
       }
     });
     
-    observer.observe(document.documentElement, {
+    themeObserver.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['class']
     });
     
-    // 也监听 storage 事件，以便处理来自其他地方的 theme 变化
+    // 监听 storage 事件
     window.addEventListener('storage', (event) => {
       if (event.key === 'theme' || event.key === 'color-theme') {
         reloadGiscus();
@@ -123,29 +193,60 @@ const {
     });
   }
   
-  // 页面加载时初始化
+  // 初始化 Giscus
   function initGiscus() {
-    // 等待一小段时间确保 DOM 完全加载
-    setTimeout(() => {
-      loadGiscus();
-      setupThemeListener();
-    }, 300);
+    // 等待 DOM 完全加载
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          loadGiscus();
+          setupThemeListener();
+        }, 300);
+      });
+    } else {
+      setTimeout(() => {
+        loadGiscus();
+        setupThemeListener();
+      }, 300);
+    }
   }
   
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initGiscus);
-  } else {
-    initGiscus();
-  }
+  // 页面卸载时清理
+  window.addEventListener('beforeunload', () => {
+    if (themeObserver) {
+      themeObserver.disconnect();
+    }
+  });
+  
+  // 启动 Giscus
+  initGiscus();
 </script>
 
 <style>
   .giscus-comments {
-    min-height: 300px; /* 预留高度，避免布局抖动 */
+    min-height: 300px;
   }
   
   .giscus-comments iframe {
     width: 100% !important;
     border: none;
+    min-height: 300px;
+  }
+  
+  .giscus-error {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .retry-btn {
+    transition: all 0.2s ease;
+  }
+  
+  .retry-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   }
 </style>
