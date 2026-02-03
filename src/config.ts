@@ -33,7 +33,7 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		// Leave this array empty to use the default favicon
 		 {
-		   src: 'https://thirdqq.qlogo.cn/ek_qqapp/AQJAUKVBB59MLicU9ibvU6jCgfPh3pNrNWHO8Vajs5wegtnrIcmWazwySCDRghP2XGQbAibUJjDGD28lvjce7nkMWdO9gjpm0pkzricoWx3vrKJQfayUpssc1b1knRiaxhQ/0',    // Path of the favicon, relative to the /public directory
+		   src: 'https://q2.qlogo.cn/headimg_dl?dst_uin=3574552394&spec=0',    // Path of the favicon, relative to the /public directory
 		  theme: 'light',              // (Optional) Either 'light' or 'dark', set only if you have different favicons for light and dark mode
 		   sizes: '32x32',              // (Optional) Size of the favicon, set only if you have favicons of different sizes
 		}
@@ -59,7 +59,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "https://thirdqq.qlogo.cn/ek_qqapp/AQJAUKVBB59MLicU9ibvU6jCgfPh3pNrNWHO8Vajs5wegtnrIcmWazwySCDRghP2XGQbAibUJjDGD28lvjce7nkMWdO9gjpm0pkzricoWx3vrKJQfayUpssc1b1knRiaxhQ/0", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "https://q2.qlogo.cn/headimg_dl?dst_uin=3574552394&spec=0", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "无大人生",
 	bio: "远赴人间惊鸿宴，一睹人间盛世颜。",
 	links: [
