@@ -24,229 +24,134 @@ const {
 } = Astro.props;
 ---
 
-<div id="giscus-container" class="giscus-comments"></div>
+<!-- Giscus 评论容器 -->
+<div class="giscus"></div>
 
-<script define:vars={{ repo, repoId, category, categoryId, mapping, reactionsEnabled, emitMetadata, inputPosition, lang }}>
-  let giscusScript = null;
-  let themeObserver = null;
-  
-  // 获取当前主题
-  function getCurrentTheme() {
-    return document.documentElement.classList.contains('dark') ? 'dark_dimmed' : 'light';
-  }
-  
-  // 获取有效的 origin
-  function getValidOrigin() {
-    const currentOrigin = window.location.origin;
-    const hostname = window.location.hostname;
+<!-- 加载 Giscus 的静态脚本 -->
+<script is:inline>
+  // 页面加载完成后初始化 Giscus
+  document.addEventListener('DOMContentLoaded', function() {
+    // 检测当前主题
+    const isDark = document.documentElement.classList.contains('dark');
+    const theme = isDark ? 'dark_dimmed' : 'light';
     
-    // 检查是否是临时域名（Cloudflare Pages, Vercel, Netlify 等）
-    const isTempDomain = 
-      hostname.includes('cloudflarepages') || 
-      hostname.includes('vercel.app') || 
-      hostname.includes('netlify.app') ||
-      hostname.includes('web.app') ||
-      hostname.includes('firebaseapp.com') ||
-      /^[a-f0-9]{8,}(-[a-f0-9]{4,}){0,}\.[a-z0-9-]+\.(pages|vercel|netlify)\.app$/i.test(hostname) ||
-      /^[a-f0-9]{12,}$/i.test(hostname.replace(/\./g, '')) || // 纯哈希域名
-      hostname === 'localhost' ||
-      hostname === '127.0.0.1' ||
-      hostname.startsWith('192.168.') ||
-      hostname.startsWith('10.');
-    
-    // 如果是临时域名，使用 GitHub Pages 域名
-    if (isTempDomain) {
-      // 从 repo 提取用户名
-      const repoParts = repo.split('/');
-      if (repoParts.length >= 2) {
-        const userName = repoParts[0];
-        return `https://${userName}.github.io`;
-      }
-      // 如果无法提取，使用默认值
-      return 'https://wudarensheng.github.io';
-    }
-    
-    // 否则使用当前域名
-    return currentOrigin;
-  }
-  
-  // 加载 Giscus
-  function loadGiscus() {
-    const container = document.getElementById('giscus-container');
-    if (!container) {
-      console.error('Giscus container not found');
-      return;
-    }
-    
-    // 清除现有内容
-    container.innerHTML = '';
-    
-    const theme = getCurrentTheme();
-    const validOrigin = getValidOrigin();
-    
-    console.log('Loading Giscus with origin:', validOrigin, 'theme:', theme);
-    
-    // 创建 Giscus 脚本
+    // 创建 Giscus script 元素
     const script = document.createElement('script');
     script.src = 'https://giscus.app/client.js';
-    script.setAttribute('data-repo', repo);
-    script.setAttribute('data-repo-id', repoId);
-    script.setAttribute('data-category', category);
-    script.setAttribute('data-category-id', categoryId);
-    script.setAttribute('data-mapping', mapping);
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    
+    // 设置 data 属性
+    script.setAttribute('data-repo', '${repo}');
+    script.setAttribute('data-repo-id', '${repoId}');
+    script.setAttribute('data-category', '${category}');
+    script.setAttribute('data-category-id', '${categoryId}');
+    script.setAttribute('data-mapping', '${mapping}');
     script.setAttribute('data-strict', '0');
-    script.setAttribute('data-reactions-enabled', reactionsEnabled ? '1' : '0');
-    script.setAttribute('data-emit-metadata', emitMetadata ? '1' : '0');
-    script.setAttribute('data-input-position', inputPosition);
+    script.setAttribute('data-reactions-enabled', '${reactionsEnabled ? "1" : "0"}');
+    script.setAttribute('data-emit-metadata', '${emitMetadata ? "1" : "0"}');
+    script.setAttribute('data-input-position', '${inputPosition}');
     script.setAttribute('data-theme', theme);
-    script.setAttribute('data-lang', lang);
+    script.setAttribute('data-lang', '${lang}');
     script.setAttribute('data-loading', 'lazy');
     
-    // 关键：手动设置有效的 origin
-    script.setAttribute('data-origin', validOrigin);
-    
-    script.setAttribute('crossorigin', 'anonymous');
-    script.async = true;
-    script.defer = true;
-    
-    // 错误处理
-    script.onerror = function(error) {
-      console.error('Failed to load Giscus script:', error);
-      container.innerHTML = `
-        <div class="giscus-error text-center p-6 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-          <div class="text-gray-600 dark:text-gray-400 mb-3">
-            <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <p class="font-medium">评论加载失败</p>
-            <p class="text-sm mt-1">当前域名: ${window.location.hostname}</p>
-            <p class="text-sm">使用的 Origin: ${validOrigin}</p>
-          </div>
-          <button onclick="loadGiscus()" class="retry-btn px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
-            重新加载评论
-          </button>
-        </div>
-      `;
+    // 添加错误处理
+    script.onerror = function() {
+      console.error('Failed to load Giscus comments');
+      const container = document.querySelector('.giscus');
+      if (container) {
+        container.innerHTML = '<p style="text-align:center;color:#666;">评论加载失败，请稍后重试</p>';
+      }
     };
     
-    script.onload = function() {
-      console.log('Giscus loaded successfully');
-      // 监听 iframe 加载完成
-      setTimeout(() => {
-        const iframe = document.querySelector('iframe.giscus-frame');
-        if (iframe) {
-          console.log('Giscus iframe found');
-          iframe.onload = function() {
-            console.log('Giscus iframe content loaded');
-          };
-        }
-      }, 1000);
-    };
-    
-    container.appendChild(script);
-    giscusScript = script;
-  }
-  
-  // 重新加载 Giscus（主题变化时使用）
-  function reloadGiscus() {
-    if (giscusScript && giscusScript.parentNode) {
-      giscusScript.parentNode.removeChild(giscusScript);
-    }
-    
-    // 等待一小段时间确保脚本完全卸载
-    setTimeout(() => {
-      loadGiscus();
-    }, 300);
-  }
-  
-  // 监听主题变化
-  function setupThemeListener() {
-    if (themeObserver) {
-      themeObserver.disconnect();
-    }
-    
-    let themeTimer = null;
-    themeObserver = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          // 防抖处理，避免频繁重载
-          clearTimeout(themeTimer);
-          themeTimer = setTimeout(() => {
-            console.log('Theme changed, reloading Giscus');
-            reloadGiscus();
-          }, 500);
-          break;
-        }
-      }
-    });
-    
-    themeObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-    
-    // 监听 storage 事件
-    window.addEventListener('storage', (event) => {
-      if (event.key === 'theme' || event.key === 'color-theme') {
-        reloadGiscus();
-      }
-    });
-  }
-  
-  // 初始化 Giscus
-  function initGiscus() {
-    // 等待 DOM 完全加载
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-          loadGiscus();
-          setupThemeListener();
-        }, 300);
-      });
-    } else {
-      setTimeout(() => {
-        loadGiscus();
-        setupThemeListener();
-      }, 300);
-    }
-  }
-  
-  // 页面卸载时清理
-  window.addEventListener('beforeunload', () => {
-    if (themeObserver) {
-      themeObserver.disconnect();
+    // 插入到页面中
+    const container = document.querySelector('.giscus');
+    if (container) {
+      container.appendChild(script);
     }
   });
   
-  // 启动 Giscus
-  initGiscus();
+  // 监听主题变化，重新加载 Giscus
+  function handleThemeChange() {
+    const isDark = document.documentElement.classList.contains('dark');
+    const theme = isDark ? 'dark_dimmed' : 'light';
+    const giscusFrame = document.querySelector('iframe.giscus-frame');
+    
+    if (giscusFrame && giscusFrame.contentWindow) {
+      try {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: theme
+              }
+            }
+          },
+          'https://giscus.app'
+        );
+      } catch (e) {
+        console.log('Giscus theme update sent');
+      }
+    }
+  }
+  
+  // 使用 MutationObserver 监听主题变化
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.attributeName === 'class') {
+        // 延迟执行，确保主题已完全切换
+        setTimeout(handleThemeChange, 100);
+      }
+    });
+  });
+  
+  // 开始观察文档元素的类变化
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
+  });
 </script>
 
+<!-- 备用样式，确保评论区域有合适的显示 -->
 <style>
-  .giscus-comments {
-    min-height: 300px;
+  .giscus {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
   
-  .giscus-comments iframe {
-    width: 100% !important;
+  .giscus iframe {
+    min-height: 400px;
+    width: 100%;
     border: none;
-    min-height: 300px;
   }
   
-  .giscus-error {
-    min-height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  /* 加载状态提示 */
+  .giscus::before {
+    content: "正在加载评论...";
+    display: block;
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+    font-style: italic;
   }
   
-  .retry-btn {
-    transition: all 0.2s ease;
-  }
-  
-  .retry-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  .giscus.loaded::before {
+    display: none;
   }
 </style>
+
+<script is:inline>
+  // 添加加载状态管理
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.giscus');
+    
+    // 监听 Giscus 加载完成事件
+    window.addEventListener('message', function(event) {
+      if (event.origin === 'https://giscus.app' && event.data.giscus) {
+        if (event.data.giscus.discussion) {
+          container.classList.add('loaded');
+        }
+      }
+    });
+  });
+</script>
