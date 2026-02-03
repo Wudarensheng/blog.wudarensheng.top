@@ -25,133 +25,266 @@ const {
 ---
 
 <!-- Giscus 评论容器 -->
-<div class="giscus"></div>
+<div id="giscus-container" class="giscus-container">
+  <div class="giscus-loading">正在加载评论系统...</div>
+</div>
 
-<!-- 加载 Giscus 的静态脚本 -->
+<!-- 备用评论系统提示 -->
+<div id="giscus-fallback" class="giscus-fallback" style="display: none;">
+  <p>评论系统暂时无法加载，您可以通过 <a href="https://github.com/Wudarensheng/blog-giscus/discussions" target="_blank">GitHub Discussions</a> 参与讨论。</p>
+</div>
+
+<!-- 主脚本 -->
 <script is:inline>
-  // 页面加载完成后初始化 Giscus
-  document.addEventListener('DOMContentLoaded', function() {
-    // 检测当前主题
-    const isDark = document.documentElement.classList.contains('dark');
-    const theme = isDark ? 'dark_dimmed' : 'light';
-    
-    // 创建 Giscus script 元素
-    const script = document.createElement('script');
-    script.src = 'https://giscus.app/client.js';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    
-    // 设置 data 属性
-    script.setAttribute('data-repo', '${repo}');
-    script.setAttribute('data-repo-id', '${repoId}');
-    script.setAttribute('data-category', '${category}');
-    script.setAttribute('data-category-id', '${categoryId}');
-    script.setAttribute('data-mapping', '${mapping}');
-    script.setAttribute('data-strict', '0');
-    script.setAttribute('data-reactions-enabled', '${reactionsEnabled ? "1" : "0"}');
-    script.setAttribute('data-emit-metadata', '${emitMetadata ? "1" : "0"}');
-    script.setAttribute('data-input-position', '${inputPosition}');
-    script.setAttribute('data-theme', theme);
-    script.setAttribute('data-lang', '${lang}');
-    script.setAttribute('data-loading', 'lazy');
-    
-    // 添加错误处理
-    script.onerror = function() {
-      console.error('Failed to load Giscus comments');
-      const container = document.querySelector('.giscus');
-      if (container) {
-        container.innerHTML = '<p style="text-align:center;color:#666;">评论加载失败，请稍后重试</p>';
-      }
+  (function() {
+    // 配置对象
+    const config = {
+      repo: '${repo}',
+      repoId: '${repoId}',
+      category: '${category}',
+      categoryId: '${categoryId}',
+      mapping: '${mapping}',
+      strict: '0',
+      reactionsEnabled: '${reactionsEnabled ? "1" : "0"}',
+      emitMetadata: '${emitMetadata ? "1" : "0"}',
+      inputPosition: '${inputPosition}',
+      theme: 'preferred_color_scheme', // 使用系统偏好主题
+      lang: '${lang}',
+      loading: 'lazy',
+      crossorigin: 'anonymous'
     };
     
-    // 插入到页面中
-    const container = document.querySelector('.giscus');
-    if (container) {
+    // 创建 script 元素
+    function createGiscusScript() {
+      const script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.async = true;
+      script.crossOrigin = 'anonymous';
+      
+      // 设置所有 data 属性
+      Object.keys(config).forEach(key => {
+        if (key !== 'crossorigin') {
+          script.setAttribute(`data-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`, config[key]);
+        }
+      });
+      
+      return script;
+    }
+    
+    // 加载 Giscus
+    function loadGiscus() {
+      const container = document.getElementById('giscus-container');
+      if (!container) return;
+      
+      // 检查是否已加载
+      if (document.querySelector('iframe.giscus-frame')) {
+        return;
+      }
+      
+      // 创建并添加 script
+      const script = createGiscusScript();
+      
+      // 添加超时处理
+      const timeoutId = setTimeout(() => {
+        showFallback();
+      }, 10000); // 10秒超时
+      
+      script.onload = function() {
+        clearTimeout(timeoutId);
+        console.log('Giscus loaded successfully');
+      };
+      
+      script.onerror = function(error) {
+        clearTimeout(timeoutId);
+        console.error('Failed to load Giscus:', error);
+        showFallback();
+        
+        // 尝试备用方案
+        setTimeout(tryAlternativeMethod, 2000);
+      };
+      
       container.appendChild(script);
     }
-  });
-  
-  // 监听主题变化，重新加载 Giscus
-  function handleThemeChange() {
-    const isDark = document.documentElement.classList.contains('dark');
-    const theme = isDark ? 'dark_dimmed' : 'light';
-    const giscusFrame = document.querySelector('iframe.giscus-frame');
     
-    if (giscusFrame && giscusFrame.contentWindow) {
-      try {
-        giscusFrame.contentWindow.postMessage(
-          {
-            giscus: {
-              setConfig: {
-                theme: theme
-              }
-            }
-          },
-          'https://giscus.app'
-        );
-      } catch (e) {
-        console.log('Giscus theme update sent');
+    // 显示备用方案
+    function showFallback() {
+      const container = document.getElementById('giscus-container');
+      const fallback = document.getElementById('giscus-fallback');
+      
+      if (container) {
+        container.style.display = 'none';
+      }
+      
+      if (fallback) {
+        fallback.style.display = 'block';
       }
     }
-  }
-  
-  // 使用 MutationObserver 监听主题变化
-  const observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      if (mutation.attributeName === 'class') {
-        // 延迟执行，确保主题已完全切换
-        setTimeout(handleThemeChange, 100);
-      }
-    });
-  });
-  
-  // 开始观察文档元素的类变化
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['class']
-  });
-</script>
-
-<!-- 备用样式，确保评论区域有合适的显示 -->
-<style>
-  .giscus {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
-  
-  .giscus iframe {
-    min-height: 400px;
-    width: 100%;
-    border: none;
-  }
-  
-  /* 加载状态提示 */
-  .giscus::before {
-    content: "正在加载评论...";
-    display: block;
-    text-align: center;
-    color: #666;
-    padding: 2rem;
-    font-style: italic;
-  }
-  
-  .giscus.loaded::before {
-    display: none;
-  }
-</style>
-
-<script is:inline>
-  // 添加加载状态管理
-  document.addEventListener('DOMContentLoaded', function() {
-    const container = document.querySelector('.giscus');
     
-    // 监听 Giscus 加载完成事件
-    window.addEventListener('message', function(event) {
-      if (event.origin === 'https://giscus.app' && event.data.giscus) {
-        if (event.data.giscus.discussion) {
-          container.classList.add('loaded');
+    // 尝试替代加载方法
+    function tryAlternativeMethod() {
+      console.log('Trying alternative loading method...');
+      
+      // 方法1: 使用 iframe 直接加载
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://giscus.app/client.html?repo=${encodeURIComponent(config.repo)}&repo-id=${config.repoId}&category=${encodeURIComponent(config.category)}&category-id=${config.categoryId}&theme=${config.theme}&lang=${config.lang}`;
+      iframe.width = '100%';
+      iframe.height = '400';
+      iframe.frameBorder = '0';
+      iframe.scrolling = 'no';
+      iframe.loading = 'lazy';
+      iframe.title = 'Comments';
+      iframe.className = 'giscus-frame';
+      iframe.sandbox = 'allow-scripts allow-same-origin allow-popups allow-forms';
+      iframe.allow = 'clipboard-write';
+      iframe.style.border = 'none';
+      iframe.style.minHeight = '400px';
+      
+      const container = document.getElementById('giscus-container');
+      if (container) {
+        container.innerHTML = '';
+        container.appendChild(iframe);
+        
+        // 监听 iframe 加载
+        iframe.onload = function() {
+          console.log('Giscus iframe loaded successfully');
+        };
+        
+        iframe.onerror = function() {
+          console.error('Giscus iframe failed to load');
+          showFallback();
+        };
+      }
+    }
+    
+    // 检查网络连接
+    function checkNetwork() {
+      return navigator.onLine;
+    }
+    
+    // 初始化
+    function init() {
+      if (!checkNetwork()) {
+        console.warn('No network connection available');
+        showFallback();
+        return;
+      }
+      
+      // 延迟加载，确保页面主要内容已加载
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          setTimeout(loadGiscus, 1000); // 延迟1秒加载
+        });
+      } else {
+        setTimeout(loadGiscus, 1000);
+      }
+    }
+    
+    // 主题切换处理（轻量级）
+    function handleThemeChange() {
+      const giscusFrame = document.querySelector('iframe.giscus-frame');
+      if (giscusFrame && giscusFrame.contentWindow) {
+        try {
+          const isDark = document.documentElement.classList.contains('dark');
+          const theme = isDark ? 'dark_dimmed' : 'light';
+          
+          giscusFrame.contentWindow.postMessage(
+            {
+              giscus: {
+                setConfig: {
+                  theme: theme
+                }
+              }
+            },
+            'https://giscus.app'
+          );
+        } catch (e) {
+          // 静默处理错误
         }
       }
-    });
-  });
+    }
+    
+    // 启动
+    init();
+    
+    // 监听主题变化（可选，如果不需要可以移除）
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName === 'class') {
+            setTimeout(handleThemeChange, 300);
+          }
+        });
+      });
+      
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
+  })();
 </script>
+
+<style>
+  .giscus-container {
+    margin: 3rem 0;
+    min-height: 400px;
+    position: relative;
+  }
+  
+  .giscus-loading {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    font-style: italic;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 8px;
+  }
+  
+  .dark .giscus-loading {
+    background: linear-gradient(90deg, #2d2d2d 25%, #3d3d3d 50%, #2d2d2d 75%);
+    color: #aaa;
+  }
+  
+  @keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  
+  .giscus-fallback {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    margin: 2rem 0;
+  }
+  
+  .dark .giscus-fallback {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #e0e0e0;
+  }
+  
+  .giscus-fallback a {
+    color: #0969da;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .dark .giscus-fallback a {
+    color: #58a6ff;
+  }
+  
+  .giscus-fallback a:hover {
+    text-decoration: underline;
+  }
+  
+  .giscus-frame {
+    min-height: 400px;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+</style>
