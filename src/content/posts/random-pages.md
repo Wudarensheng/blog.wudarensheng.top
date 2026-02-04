@@ -5,6 +5,7 @@ description: '永久免费的随机图API!'
 image: ''
 tags: [随机图]
 category: '白嫖'
+series: '教程'
 draft: false 
 lang: ''
 

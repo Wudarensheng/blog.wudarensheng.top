@@ -5,6 +5,7 @@ description: '阿里云也出免费的CDN了？'
 image: ''
 tags: [ESA]
 category: '白嫖'
+series: '教程'
 draft: false 
 lang: ''
 

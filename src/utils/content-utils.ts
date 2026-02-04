@@ -112,3 +112,9 @@ export async function getCategoryList(): Promise<Category[]> {
 	}
 	return ret;
 }
+
+export async function getPostSeries(seriesName: string) {
+    const allPosts = await getRawSortedPosts();
+    const seriesPosts = allPosts.filter(post => post.data.series === seriesName);
+    return seriesPosts;
+}
