@@ -13,7 +13,7 @@ export const siteConfig: SiteConfig = {
 	lang: "zh_CN", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
 	themeColor: {
 		hue: 225, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
-		fixed: true, // Hide the theme color picker for visitors
+		fixed: false, // Hide the theme color picker for visitors
 		forceDarkMode: true, // Force dark mode and hide theme switcher
 	},
 	banner: {
@@ -45,13 +45,9 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Home,
 		LinkPreset.Archive,
 		LinkPreset.About,
+
 		{
-			name: "监控1",
-			url: "https://uptime.wudarensheng.top/", // Internal links should not include the base path, as it is automatically added
-			external: true, // Show an external link icon and will open in a new tab
-		},
-		{
-			name: "监控2",
+			name: "监控",
 			url: "https://status.wudarensheng.top/status/status", // Internal links should not include the base path, as it is automatically added
 			external: true, // Show an external link icon and will open in a new tab
 		},
