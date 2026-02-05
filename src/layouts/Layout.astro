@@ -8,14 +8,14 @@ import { Image } from "astro:assets";
 import ConfigCarrier from "@components/ConfigCarrier.astro";
 import { profileConfig, siteConfig } from "@/config";
 import {
-  AUTO_MODE,
-  BANNER_HEIGHT,
-  BANNER_HEIGHT_EXTEND,
-  BANNER_HEIGHT_HOME,
-  DARK_MODE,
-  DEFAULT_THEME,
-  LIGHT_MODE,
-  PAGE_WIDTH,
+	AUTO_MODE,
+	BANNER_HEIGHT,
+	BANNER_HEIGHT_EXTEND,
+	BANNER_HEIGHT_HOME,
+	DARK_MODE,
+	DEFAULT_THEME,
+	LIGHT_MODE,
+	PAGE_WIDTH,
 } from "../constants/constants";
 import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
@@ -24,14 +24,12 @@ import "katex/dist/katex.css";
 // ⭐ 关键修改点 2：导入背景图片（请将 1.png 替换为您的图片文件名）
 import backgroundImage from "../assets/images/background.png";
 
-
-
 interface Props {
-  title?: string;
-  banner?: string;
-  description?: string;
-  lang?: string;
-  setOGTypeArticle?: boolean;
+	title?: string;
+	banner?: string;
+	description?: string;
+	lang?: string;
+	setOGTypeArticle?: boolean;
 }
 
 let { title, banner, description, lang, setOGTypeArticle } = Astro.props;
@@ -45,7 +43,7 @@ const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 // why doing this in Layout instead of GlobalStyles: https://github.com/withastro/astro/issues/6728#issuecomment-1502203757
 const configHue = siteConfig.themeColor.hue;
 if (!banner || typeof banner !== "string" || banner.trim() === "") {
-  banner = siteConfig.banner.src;
+	banner = siteConfig.banner.src;
 }
 
 // TODO don't use post cover as banner for now
@@ -55,31 +53,31 @@ const enableBanner = siteConfig.banner.enable;
 
 let pageTitle: string;
 if (title) {
-  pageTitle = `${title} - ${siteConfig.title}`;
+	pageTitle = `${title} - ${siteConfig.title}`;
 } else {
-  pageTitle = `${siteConfig.title} - ${siteConfig.subtitle}`;
+	pageTitle = `${siteConfig.title} - ${siteConfig.subtitle}`;
 }
 
 const favicons: Favicon[] =
-  siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
+	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
 
 // const siteLang = siteConfig.lang.replace('_', '-')
 if (!lang) {
-  lang = `${siteConfig.lang}`;
+	lang = `${siteConfig.lang}`;
 }
 const siteLang = lang.replace("_", "-");
 
 const bannerOffsetByPosition = {
-  top: `${BANNER_HEIGHT_EXTEND}vh`,
-  center: `${BANNER_HEIGHT_EXTEND / 2}vh`,
-  bottom: "0",
+	top: `${BANNER_HEIGHT_EXTEND}vh`,
+	center: `${BANNER_HEIGHT_EXTEND / 2}vh`,
+	bottom: "0",
 };
 const bannerOffset =
-  bannerOffsetByPosition[siteConfig.banner.position || "center"];
+	bannerOffsetByPosition[siteConfig.banner.position || "center"];
 ---
 
 <!DOCTYPE html>
-<html lang={siteLang} class="bg-[var(--page-bg)] transition text-[12px] md:text-[16px] dark" data-overlayscrollbars-initialize
+<html lang={siteLang} class="bg-[var(--page-bg)] transition text-[12px] md:text-[16px]" data-overlayscrollbars-initialize
     data-overlayscrollbars-initialize
 >
   <head>
