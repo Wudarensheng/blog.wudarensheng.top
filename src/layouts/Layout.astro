@@ -190,8 +190,6 @@ const bannerOffset =
   .card-url,
   .uc-image {
     background: var(--card-bg);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     @apply border border-black/5 dark:border-white/10;
   }
 
@@ -602,3 +600,17 @@ if (window.swup) {
 </script>
 <script defer src="https://umami.wudarensheng.top/script.js" data-website-id="a267f5d8-a89b-4272-be35-793d66e21c97"></script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="3bc203cf-babf-4944-bc2f-e03ac1c31282"></script>
+<script>
+if (window.swup) {
+  setup()
+} else {
+  document.addEventListener("swup:enable", setup)
+}
+</script>
+<script>
+if (window.swup) {
+  setup()
+} else {
+  document.addEventListener("swup:enable", setup)
+}
+</script>
