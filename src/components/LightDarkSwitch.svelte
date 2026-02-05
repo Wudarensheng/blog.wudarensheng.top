@@ -12,15 +12,14 @@ import { onMount } from "svelte";
 import type { LIGHT_DARK_MODE } from "@/types/config.ts";
 
 const seq: LIGHT_DARK_MODE[] = [LIGHT_MODE, DARK_MODE, AUTO_MODE];
-let mode: LIGHT_DARK_MODE = $state(AUTO_MODE);
+let mode: LIGHT_DARK_MODE = $state(getStoredTheme());
 
 onMount(() => {
-	mode = getStoredTheme();
 	const darkModePreference = window.matchMedia("(prefers-color-scheme: dark)");
 	const changeThemeWhenSchemeChanged: Parameters<
 		typeof darkModePreference.addEventListener<"change">
 	>[1] = (_e) => {
-		applyThemeToDocument(mode);
+		applyThemeToDocument(getStoredTheme());
 	};
 	darkModePreference.addEventListener("change", changeThemeWhenSchemeChanged);
 	return () => {

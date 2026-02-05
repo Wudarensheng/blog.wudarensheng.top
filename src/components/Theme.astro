@@ -1,0 +1,42 @@
+---
+import {
+    AUTO_MODE,
+    DARK_MODE,
+    DEFAULT_THEME,
+    LIGHT_MODE,
+} from "@constants/constants";
+import { siteConfig } from "@/config";
+---
+
+<script
+    is:inline
+    define:vars={{
+        DEFAULT_THEME,
+        LIGHT_MODE,
+        DARK_MODE,
+        AUTO_MODE,
+        forceDarkMode: siteConfig.themeColor.forceDarkMode,
+    }}
+>
+    if (forceDarkMode) {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", DARK_MODE);
+    } else {
+        const validThemes = [LIGHT_MODE, DARK_MODE, AUTO_MODE];
+        let theme = localStorage.getItem("theme");
+        if (!theme || !validThemes.includes(theme)) {
+            theme = DARK_MODE; // Default to dark mode
+            localStorage.setItem("theme", theme);
+        }
+
+        const isDark =
+            theme === DARK_MODE ||
+            (theme === AUTO_MODE &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches);
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }
+</script>
