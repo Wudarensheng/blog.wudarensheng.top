@@ -1,7 +1,9 @@
 ---
-
 import { getEntry, render } from "astro:content";
+import astroLogo from "@assets/images/astro-logo.svg";
+import cfLogo from "@assets/images/cf-logo.svg";
 import Markdown from "@components/misc/Markdown.astro";
+import { Icon } from "astro-icon/components";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
@@ -15,11 +17,91 @@ if (!aboutPost) {
 const { Content } = await render(aboutPost);
 ---
 <MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
-    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-        <div class="card-base z-10 px-9 py-6 relative w-full ">
-            <Markdown class="mt-2">
-                <Content />
-            </Markdown>
+    <div class="card-base p-8 rounded-[var(--radius-large)] relative overflow-hidden">
+        <div class="flex items-center gap-2 mb-4">
+            <div class="bg-blue-500 rounded-md p-2">
+                <Icon name="fa6-solid:user" class="text-white text-lg" />
+            </div>
+            <span class="text-xl font-bold text-white">关于</span>
+        </div>
+        <h1 class="text-8xl md:text-9xl font-bold text-blue-200/50 dark:text-blue-500/20 text-center select-none pointer-events-none absolute top-24 left-1/2 -translate-x-1/2 z-0">
+            ABOUT
+        </h1>
+        <div class="relative z-10 flex flex-col md:flex-row items-center gap-8 mt-40">
+            <div class="w-32 h-32 md:w-40 md:h-40 flex-shrink-0">
+                <img src="https://q2.qlogo.cn/headimg_dl?dst_uin=3574552394&spec=0" alt="THW Avatar" class="w-full h-full rounded-full object-cover">
+            </div>
+            <div class="flex-grow text-center md:text-left">
+                <h1 class="text-4xl font-bold text-black dark:text-white">无大人生</h1>
+                <p class="text-lg text-gray-500 dark:text-gray-400 mt-1">个人开发者</p>
+                <div class="flex justify-center md:justify-start gap-4 mt-4">
+                    <a href="https://github.com/Wudarensheng" target="_blank" class="btn-regular flex items-center gap-2">
+                        <Icon name="fa6-brands:github" class="text-lg" />
+                        GitHub
+                    </a>
+                    <a href="https://space.bilibili.com/3546673733175817" target="_blank" class="btn-regular flex items-center gap-2">
+                        <Icon name="fa6-brands:bilibili" class="text-lg" />
+                        Bilibili
+                    </a>
+                    <a href="mailto:wdrs666@foxmail.com" class="btn-regular flex items-center gap-2">
+                        <Icon name="fa6-solid:envelope" class="text-lg" />
+                        Email
+                    </a>
+                </div>
+                <div class="mt-6">
+                    <Markdown>
+                        <Content />
+                    </Markdown>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12">
+            <h2 class="text-xl font-bold text-black dark:text-white mb-4">技术栈</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-base p-6 rounded-[var(--radius-large)] border-2" style="border-color: #ff5d01;">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-[#ff5d01] rounded-lg flex items-center justify-center">
+                            <img src={astroLogo.src} alt="Astro Logo" class="w-8 h-8" />
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-xl text-black dark:text-white">Astro</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">构建框架</p>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        一个现代化的前端框架，用于构建以内容为中心的快速网站。
+                    </p>
+                </div>
+                <div class="card-base p-6 rounded-[var(--radius-large)] border-2" style="border-color: #8c3eee;">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-[#8c3eee] rounded-lg flex items-center justify-center">
+                            <span class="text-white text-2xl font-bold">F</span>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-xl text-black dark:text-white">Fuwari</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">博客主题</p>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        本站使用的高度可定制的 Astro 博客主题。
+                    </p>
+                </div>
+                <div class="card-base p-6 rounded-[var(--radius-large)] border-2" style="border-color: #0054c4;">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-black rounded-lg flex items-center justify-center">
+                            <img src={cfLogo.src} alt="Cloudflare Logo" class="w-8 h-8" />
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-xl text-black dark:text-white">Cloudflare</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">托管服务</p>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        一个全球性的云平台，提供 CDN、DNS 以及 Pages 和 Workers 等无服务器功能。
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </MainGridLayout>
