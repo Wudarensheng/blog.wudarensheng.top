@@ -32,11 +32,11 @@ export const siteConfig: SiteConfig = {
 	},
 	favicon: [
 		// Leave this array empty to use the default favicon
-		 {
-		   src: 'https://q2.qlogo.cn/headimg_dl?dst_uin=3574552394&spec=0',    // Path of the favicon, relative to the /public directory
-		  theme: 'light',              // (Optional) Either 'light' or 'dark', set only if you have different favicons for light and dark mode
-		   sizes: '32x32',              // (Optional) Size of the favicon, set only if you have favicons of different sizes
-		}
+		{
+			src: "https://q2.qlogo.cn/headimg_dl?dst_uin=3574552394&spec=0", // Path of the favicon, relative to the /public directory
+			theme: "light", // (Optional) Either 'light' or 'dark', set only if you have different favicons for light and dark mode
+			sizes: "32x32", // (Optional) Size of the favicon, set only if you have favicons of different sizes
+		},
 	],
 };
 
@@ -52,6 +52,18 @@ export const navBarConfig: NavBarConfig = {
 		},
 
 		{
+			name: "统计",
+			url: "https://umami.wudarensheng.top/share/MJen4dtnpegjOOys", // Internal links should not include the base path, as it is automatically added
+			external: true, // Show an external link icon and will open in a new tab
+		},
+
+		{
+			name: "流量",
+			url: "https://eo.wudarensheng.top/", // Internal links should not include the base path, as it is automatically added
+			external: true, // Show an external link icon and will open in a new tab
+		},
+
+		{
 			name: "监控",
 			url: "https://status.wudarensheng.top/status/status", // Internal links should not include the base path, as it is automatically added
 			external: true, // Show an external link icon and will open in a new tab
@@ -64,7 +76,6 @@ export const profileConfig: ProfileConfig = {
 	name: "无大人生",
 	bio: "远赴人间惊鸿宴，一睹人间盛世颜。",
 	links: [
-		
 		{
 			name: "Bilibili",
 			icon: "fa6-brands:bilibili",

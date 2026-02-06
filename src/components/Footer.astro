@@ -1,29 +1,51 @@
 ---
 import { profileConfig } from "../config";
 import { url } from "../utils/url-utils";
-import { Image } from "astro:assets";
-import cflogo from "@assets/images/cflogo.svg";
 
 const currentYear = new Date().getFullYear();
 ---
 
 <div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
-<div class="transition bg-black/50 dark:bg-black/20 border border-black/10 dark:border-white/15 rounded-2xl mb-12 flex flex-row items-center justify-center space-x-16 px-6 py-8">
-    <div class="transition text-50 text-sm text-left">
+<div class="transition bg-black/50 dark:bg-black/20 border border-black/10 dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center space-y-4 px-6 py-8">
+    <div class="transition text-50 text-sm text-center">
         &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. 保留所有权利. 
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('rss.xml')}>RSS订阅源</a> /
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('sitemap-index.xml')}>Sitemap</a>
-        <div class="text-center mt-2">
+        <div class="mt-2">
             由
             <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
             <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/saicaca/fuwari">Fuwari</a>
             强力驱动.
         </div>
-    </div>
-    <div class="flex flex-col items-center">
-        <span class="transition text-[var(--primary)] font-medium">使用Cloudflare Pages部署</span>
-        <a href="https://www.cloudflare.com" target="_blank" rel="noopener noreferrer" class="mt-2">
-            <Image src={cflogo} alt="Cloudflare Logo" width="170" />
-        </a>
+        <div class="mt-2">
+            本站已稳定运行 <span id="running-time"></span>
+        </div>
     </div>
 </div>
+
+<script>
+    function updateRunningTime() {
+        // 建站时间: 2025/08/03 02:51:45
+        const buildDate = new Date("2025/08/03 02:51:45");
+        const now = new Date();
+        const diff = now.getTime() - buildDate.getTime();
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const runningTimeEl = document.getElementById('running-time');
+        if (runningTimeEl) {
+            runningTimeEl.innerHTML = 
+                `<span class="text-[var(--primary)] font-bold">${days}</span> 天 ` +
+                `<span class="text-[var(--primary)] font-bold">${hours}</span> 小时 ` +
+                `<span class="text-[var(--primary)] font-bold">${minutes}</span> 分 ` +
+                `<span class="text-[var(--primary)] font-bold">${seconds}</span> 秒`;
+        }
+    }
+
+    // Update immediately and then every second
+    updateRunningTime();
+    setInterval(updateRunningTime, 1000);
+</script>

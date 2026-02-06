@@ -397,6 +397,7 @@ function showBanner() {
 }
 
 function init() {
+  console.log("Layout.astro: init() called");
   // disableAnimation()()    // TODO
   loadTheme();
   loadHue();
@@ -408,6 +409,7 @@ function init() {
 init();
 
 const setup = () => {
+  console.log("Layout.astro: setup() called");
   // TODO: temp solution to change the height of the banner
 /*
   window.swup.hooks.on('animation:out:start', () => {
@@ -421,6 +423,7 @@ const setup = () => {
   })
 */
   window.swup.hooks.on('link:click', () => {
+    console.log("Layout.astro: swup link:click");
     // Remove the delay for the first time page load
     document.documentElement.style.setProperty('--content-delay', '0ms')
 
@@ -437,8 +440,12 @@ const setup = () => {
       navbar.classList.add('navbar-hidden')
     }
   })
-  window.swup.hooks.on('content:replace', initCustomScrollbar)
+  window.swup.hooks.on('content:replace', () => {
+    console.log("Layout.astro: swup content:replace");
+    initCustomScrollbar();
+  })
   window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
+    console.log("Layout.astro: swup visit:start", visit.to.url);
     // change banner height immediately when a link is clicked
     const bodyElement = document.querySelector('body')
     if (pathsEqual(visit.to.url, url('/'))) {
@@ -460,6 +467,7 @@ const setup = () => {
     }
   });
   window.swup.hooks.on('page:view', () => {
+    console.log("Layout.astro: swup page:view");
     // hide the temp high element when the transition is done
     const heightExtend = document.getElementById('page-height-extend')
     if (heightExtend) {
@@ -467,6 +475,7 @@ const setup = () => {
     }
   });
   window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
+    console.log("Layout.astro: swup visit:end");
     setTimeout(() => {
       const heightExtend = document.getElementById('page-height-extend')
       if (heightExtend) {
@@ -482,8 +491,10 @@ const setup = () => {
   });
 }
 if (window?.swup?.hooks) {
+  console.log("Layout.astro: swup already enabled, calling setup()");
   setup()
 } else {
+  console.log("Layout.astro: swup not enabled, adding event listener");
   document.addEventListener('swup:enable', setup)
 }
 
@@ -600,17 +611,3 @@ if (window.swup) {
 </script>
 <script defer src="https://umami.wudarensheng.top/script.js" data-website-id="a267f5d8-a89b-4272-be35-793d66e21c97"></script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="3bc203cf-babf-4944-bc2f-e03ac1c31282"></script>
-<script>
-if (window.swup) {
-  setup()
-} else {
-  document.addEventListener("swup:enable", setup)
-}
-</script>
-<script>
-if (window.swup) {
-  setup()
-} else {
-  document.addEventListener("swup:enable", setup)
-}
-</script>

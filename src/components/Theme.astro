@@ -25,7 +25,7 @@ import { siteConfig } from "@/config";
         const validThemes = [LIGHT_MODE, DARK_MODE, AUTO_MODE];
         let theme = localStorage.getItem("theme");
         if (!theme || !validThemes.includes(theme)) {
-            theme = DARK_MODE; // Default to dark mode
+            theme = DEFAULT_THEME;
             localStorage.setItem("theme", theme);
         }
 

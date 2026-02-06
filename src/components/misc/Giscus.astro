@@ -28,9 +28,7 @@ const {
 	giscusHost = "https://giscus.app",
 } = Astro.props;
 
-// 根据当前页面的亮/暗模式决定 giscus 的主题
-// 注意：我们不再使用 'preferred_color_scheme'，因为它在某些 SPA/视图过渡场景下可能不可靠
-// 相反，我们直接读取 <html> 元素的 class，并设置一个明确的主题
+// 根据亮/暗模式决定 giscus 的主题
 const theme = "light"; // 默认主题
 ---
 
@@ -72,7 +70,7 @@ const theme = "light"; // 默认主题
       'async': '',
     };
 
-    // 根据亮/暗模式设置主题
+    // 根据当前页面的亮/暗模式设置 giscus 主题
     const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     attributes['data-theme'] = currentTheme;
 
