@@ -1,0 +1,102 @@
+---
+import { Icon } from "astro-icon/components";
+import WidgetLayout from "./WidgetLayout.astro";
+
+interface Props {
+  class?: string;
+  style?: string;
+  name?: string;
+}
+const { class: className, style, name = "统计" } = Astro.props;
+---
+
+<WidgetLayout name={name} id="umami-stats" class:list={[className]} {style}>
+    <div class="grid grid-cols-2 divide-x divide-neutral-200 dark:divide-neutral-700 text-center">
+        <div class="px-2">
+            <div class="text-sm text-neutral-500 dark:text-neutral-400 flex items-center justify-center gap-1">
+                <Icon name="fa6-regular:eye" class="text-base"/>
+                <span>访问量</span>
+            </div>
+            <div class="text-xl font-bold text-neutral-900 dark:text-neutral-100 mt-1" id="total-pageviews">-</div>
+        </div>
+        <div class="px-2">
+            <div class="text-sm text-neutral-500 dark:text-neutral-400 flex items-center justify-center gap-1">
+                <Icon name="fa6-regular:user" class="text-sm"/>
+                <span>访客数</span>
+            </div>
+            <div class="text-xl font-bold text-neutral-900 dark:text-neutral-100 mt-1" id="total-visitors">-</div>
+        </div>
+    </div>
+</WidgetLayout>
+
+<script>
+const UMAMI_CONFIG = {
+    baseUrl: 'https://umami.wudarensheng.top/api',
+    websiteId: 'a267f5d8-a89b-4272-be35-793d66e21c97',
+    shareToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3ZWJzaXRlSWQiOiJhMjY3ZjVkOC1hODliLTQyNzItYmUzNS03OTNkNjZlMjFjOTciLCJpYXQiOjE3NzA0NTI4MjR9.Ww5Nh0aJf9hN_rIYA6VtaYyHajGW269tAPGKMw3imu0'
+};
+
+function formatNumber(num: number): string {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+}
+
+async function fetchUmamiStats() {
+    try {
+        const endAt = Date.now();
+        const startAt = 0;
+
+        const url = `${UMAMI_CONFIG.baseUrl}/websites/${UMAMI_CONFIG.websiteId}/stats?startAt=${startAt}&endAt=${endAt}&unit=hour&timezone=Asia%2FShanghai`;
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'accept': 'application/json',
+                'x-umami-share-token': UMAMI_CONFIG.shareToken
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const pageviewsElement = document.getElementById('total-pageviews');
+        const visitsElement = document.getElementById('total-visits');
+        const visitorsElement = document.getElementById('total-visitors');
+
+        if (pageviewsElement) {
+            pageviewsElement.textContent = formatNumber(data.pageviews || 0);
+        }
+
+        if (visitsElement) {
+            visitsElement.textContent = formatNumber(data.visits || 0);
+        }
+
+        if (visitorsElement) {
+            visitorsElement.textContent = formatNumber(data.visitors || 0);
+        }
+
+    } catch (error) {
+        console.error('获取Umami统计数据失败:', error);
+        const elements = ['total-pageviews', 'total-visitors'];
+        elements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = '获取失败';
+                element.classList.add('text-red-500');
+            }
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', fetchUmamiStats);
+
+if (window.swup) {
+    window.swup.hooks.on('page:view', fetchUmamiStats);
+}
+</script>

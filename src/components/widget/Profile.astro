@@ -3,6 +3,7 @@ import { Icon } from "astro-icon/components";
 import { profileConfig } from "../../config";
 import { url } from "../../utils/url-utils";
 import ImageWrapper from "../misc/ImageWrapper.astro";
+import UmamiStats from "./UmamiStats.astro";
 
 const config = profileConfig;
 ---
@@ -34,7 +35,8 @@ const config = profileConfig;
                 {config.links[0].name}
             </a>}
         </div>
-
+        <hr class="border-neutral-200 dark:border-neutral-700 mt-4 mb-2"/>
+        <UmamiStats name="" class=""/>
     </div>
 </div>
 
