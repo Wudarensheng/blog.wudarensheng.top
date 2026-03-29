@@ -48,4 +48,4 @@ lang: ''
 
 4.这个延迟很高，和Cloudflare差不多（也不知道能不能优选）
 
-![](src\assets\images\posts\esatest.png)
+![](../../assets/images/posts/esatest.png)
