@@ -24,7 +24,7 @@ Zeabur之前提供的免费计划每月有5刀的免费额度可以用来部署D
 
  但是随后在Zeabur的论坛中，Zeabur员工表示sjc1共享集群（腾讯云硅谷集群）已经转为付费集群，不再向用户免费提供。原文：https://zeabur.com/forum/posts/69b8c29b61b2cfff7ee08784
 
- ![](../../assets/images/posts/zeaburstopfree2.png)
+ ![](../../assets/images/posts/zeaburstopfree2.PNG)
 
  也就是说Zeabur会继续维持已经部署在免费共享集群上的服务，但是用户需要支付费用升级计划才能继续使用。(我的理解)
 
