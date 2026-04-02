@@ -1,7 +1,7 @@
 ---
-title: Zeabur已经停止向免费计划提供免费共享集群！
+title: Zeabur已经停止向免费计划提供免费共享集群
 published: 2026-03-29
-description: 'Zeabur已经停止向免费计划提供免费共享集群！这意味着将无法继续白嫖免费的云容器！'
+description: 'Zeabur已经停止向免费计划提供免费共享集群！这意味着将无法继续白嫖免费的云容器'
 image: ''
 tags: [云函数]
 category: '白嫖'
@@ -37,4 +37,9 @@ Zeabur之前提供的免费计划每月有5刀的免费额度可以用来部署D
 
  1.老实交钱，升级计划。
  
- 2.把服务换到其它平台，如ClawCloudRun。虽然ClawCloudRun要求每30天登录一次控制台，但是Github有很多个自动登录控制台的项目，可以试下。自动续期方式详见
+ 2.把服务换到其它平台，如ClawCloudRun。虽然ClawCloudRun要求每30天登录一次控制台，但是Github有很多个自动登录控制台的项目，可以试下。自动续期方式详见 https://blog.wudarensheng.top/posts/clawcloudrun-free-docker/
+
+ 自动续期脚本仓库
+ 
+ ::github{repo="Kystor/auto-login-clawcloud"}
+

@@ -3,7 +3,7 @@ title: 使用Cloudflare Workers+Pages制作永久免费的随机图API!
 published: 2026-02-02
 description: '永久免费的随机图API!'
 image: ''
-tags: [随机图， 云函数]
+tags: [随机图, Pages, Workers, 云函数]
 category: '白嫖'
 series: '教程'
 draft: false 
