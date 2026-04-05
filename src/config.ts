@@ -53,7 +53,7 @@ export const navBarConfig: NavBarConfig = {
 
 		{
 			name: "统计",
-			url: "https://umami.wudarensheng.top/share/MJen4dtnpegjOOys", // Internal links should not include the base path, as it is automatically added
+			url: "https://072189.xyz/umami", // Internal links should not include the base path, as it is automatically added
 			external: true, // Show an external link icon and will open in a new tab
 		},
 

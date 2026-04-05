@@ -94,4 +94,3 @@ otpauth://totp/GitHub:{你的Github账号}?secret={你的双重验证密钥}&iss
 # 结尾
 
 视频教程https://www.bilibili.com/video/BV1QSXZBUE83/
-<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=116334222378214&bvid=BV1QSXZBUE83&cid=37173134310&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
