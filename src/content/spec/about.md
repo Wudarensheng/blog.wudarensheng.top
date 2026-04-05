@@ -1,1 +1,9 @@
-Hi! 我是无大人生，一个精神状态良好的初中生，整天想着摸鱼。目前正在学习Golang、Fyne。请大家多多支持！
+本站代码已经开源至Github，基于Astro+Fuwari。
+
+本站仓库：
+::github{repo="Wudarensheng/blog.wudarensheng.top"}
+
+上游仓库（Fuwari）
+::github{repo="saicaca/fuwari"}
+
+
