@@ -1,0 +1,44 @@
+---
+import { tools } from "@components/ToolsData.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<MainGridLayout title="工具" description="本站提供的实用工具入口，点击即可跳转使用。">
+  <div class="card-base p-8">
+    <!-- Header -->
+    <div class="flex items-center mb-4">
+      <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center mr-3">
+        <Icon name="material-symbols:build-circle" class="text-2xl text-blue-500" />
+      </div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">工具</h1>
+    </div>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">本站提供的实用工具入口，点击即可跳转使用。</p>
+
+    <!-- Tools List -->
+    <div class="flex flex-col">
+      {tools.map((tool, index) => (
+        <a 
+          href={tool.link} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class={`flex items-start py-6 transition-colors hover:bg-black/5 dark:hover:bg-white/5 px-4 -mx-4 rounded-xl ${index !== tools.length - 1 ? 'border-b border-black/5 dark:border-white/5' : ''}`}
+        >
+          <div class="flex items-center justify-center mt-1 mr-4">
+            {tool.icon ? (
+              <Icon name={tool.icon} class="text-2xl text-blue-500" />
+            ) : tool.avatar ? (
+              <img src={tool.avatar} alt={tool.name} class="w-6 h-6 rounded" />
+            ) : (
+              <Icon name="material-symbols:build" class="text-2xl text-blue-500" />
+            )}
+          </div>
+          <div class="flex-grow">
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{tool.name}</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{tool.desc}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</MainGridLayout>
