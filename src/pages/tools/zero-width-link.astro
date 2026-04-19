@@ -1,0 +1,207 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<MainGridLayout title="零宽短链" description="生成零宽短链">
+  <div class="card-base p-6 mb-6">
+    <div class="flex items-center mb-2">
+      <Icon name="material-symbols:link-rounded" class="text-3xl mr-3 text-blue-500" />
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">零宽短链</h1>
+    </div>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 mb-2">
+      使用 UTF-8 零宽字符在 URL 中编码完整链接，生成视觉上完全相同的隐形短链接。访问者打开链接时，前端会自动解码并跳转到目标地址。
+    </p>
+  </div>
+
+  <!-- Generate Card -->
+  <div class="card-base p-6 mb-6">
+    <h2 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">生成短链接</h2>
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+      输入目标 URL，将生成使用零宽字符编码的隐形短链接。生成的链接视觉上完全相同（查询参数不可见），但实际跳转不同目标。
+    </p>
+
+    <div class="mb-5">
+      <label class="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-200">目标 URL</label>
+      <input type="text" id="targetUrl" placeholder="https://example.com" 
+        class="w-full px-4 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-blue-500 transition-colors text-gray-900 dark:text-white"
+      >
+    </div>
+
+    <button id="generateBtn" class="px-6 py-2.5 bg-[#3b82f6] hover:bg-[#2563eb] text-white text-sm font-medium rounded-lg transition-colors">
+      生成短链接
+    </button>
+  </div>
+
+  <!-- Results Container -->
+  <div id="resultsContainer" class="hidden mb-6">
+    <div class="flex justify-between items-center mb-4 px-1">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white">生成的链接</h2>
+      <button id="clearHistoryBtn" class="px-4 py-1.5 text-sm border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg transition-colors">
+        清除历史
+      </button>
+    </div>
+    <div id="historyList" class="space-y-4">
+      <!-- Items injected via JS -->
+    </div>
+  </div>
+
+  <!-- Explanation Card -->
+  <div class="card-base p-6">
+    <h2 class="text-xl font-bold mb-6 text-gray-900 dark:text-white">原理说明</h2>
+    <div class="space-y-5 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+      <p><strong class="text-gray-900 dark:text-white">编码原理：</strong>使用 UTF-8 零宽字符（ZWSP \u200B 和 ZWNJ \u200C）作为二进制字母表，将目标 URL 的每个字节编码为 8 个零宽字符。</p>
+      <p><strong class="text-gray-900 dark:text-white">链接格式：</strong>生成的链接格式为 <code class="bg-gray-100 dark:bg-black/30 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200">?id=&lt;零宽编码&gt;</code>，零宽字符在浏览器地址栏中不可见，所以不同 URL 生成的链接看起来完全一样。</p>
+      <p><strong class="text-gray-900 dark:text-white">解码流程：</strong>访问者打开链接时，前端 JavaScript 会从查询参数中提取零宽字符、解码还原目标 URL，然后执行跳转。</p>
+      <p><strong class="text-gray-900 dark:text-white">注意事项：</strong>编码后的 URL 长度约为原始 URL 的 8 倍（每个字节编码为 8 个零宽字符），请避免编码过长的 URL，以免超过浏览器 URL 长度限制。</p>
+    </div>
+  </div>
+
+  <script>
+    const ZWSP = '\u200B';
+    const ZWNJ = '\u200C';
+    const DOMAIN = 'https://2urls.eu.cc?id=';
+
+    function encodeZeroWidth(text: string) {
+        const encoder = new TextEncoder();
+        const bytes = encoder.encode(text);
+        let result = '';
+        for (let i = 0; i < bytes.length; i++) {
+            const bin = bytes[i].toString(2).padStart(8, '0');
+            for (let j = 0; j < bin.length; j++) {
+                result += bin[j] === '0' ? ZWSP : ZWNJ;
+            }
+        }
+        return result;
+    }
+
+    function visualizeZeroWidth(zwStr: string) {
+        let result = '';
+        for(let i=0; i<zwStr.length; i++) {
+            if(zwStr[i] === ZWSP) result += '○';
+            else if(zwStr[i] === ZWNJ) result += '●';
+            else result += zwStr[i];
+        }
+        return result;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const targetUrlInput = document.getElementById('targetUrl') as HTMLInputElement;
+        const generateBtn = document.getElementById('generateBtn');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const historyList = document.getElementById('historyList');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+
+        let history = JSON.parse(localStorage.getItem('zwLinkHistory') || '[]');
+
+        function renderHistory() {
+            if (!historyList || !resultsContainer) return;
+            historyList.innerHTML = '';
+            if (history.length === 0) {
+                resultsContainer.classList.add('hidden');
+                return;
+            }
+            resultsContainer.classList.remove('hidden');
+
+            history.forEach((item: any) => {
+                const el = document.createElement('div');
+                el.className = 'card-base p-6 bg-white dark:bg-[#1e1e20] rounded-xl shadow-sm border border-gray-200 dark:border-gray-800';
+                
+                const visual = visualizeZeroWidth(item.encoded);
+                const shortUrl = DOMAIN + item.encoded;
+
+                el.innerHTML = `
+                    <div class="mb-4">
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mb-1.5">目标 URL</div>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white break-all">${item.url}</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mb-1.5">短链接（点击复制）</div>
+                        <input type="text" readonly value="${shortUrl}" 
+                            class="w-full px-4 py-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer text-gray-900 dark:text-white focus:outline-none"
+                        >
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mb-1.5">编码可视化 (○=ZWSP, ●=ZWNJ)</div>
+                        <div class="w-full px-4 py-2.5 text-xs font-mono bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-600 dark:text-gray-400 break-all max-h-32 overflow-y-auto">?id=${visual}</div>
+                    </div>
+                    
+                    <div class="text-xs text-gray-500 dark:text-gray-400 mb-5">
+                        编码长度: ${item.encoded.length} 个零宽字符 <span class="mx-2">|</span> 原始 URL: ${item.url.length} 字符
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3">
+                        <button class="copy-btn px-4 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors" data-copy="${shortUrl}">复制链接</button>
+                        <button class="copy-btn px-4 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors" data-copy="${item.encoded}">复制编码部分</button>
+                        <a href="${shortUrl}" target="_blank" class="px-4 py-1.5 text-sm border border-blue-500 text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors">测试跳转</a>
+                    </div>
+                `;
+
+                const copyInput = el.querySelector('input[readonly]') as HTMLInputElement;
+                if (copyInput) {
+                    copyInput.addEventListener('click', (e) => {
+                        const target = e.target as HTMLInputElement;
+                        target.select();
+                        navigator.clipboard.writeText(target.value);
+                    });
+                }
+
+                const copyBtns = el.querySelectorAll('.copy-btn');
+                copyBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const target = e.currentTarget as HTMLButtonElement;
+                        navigator.clipboard.writeText(target.dataset.copy || '');
+                        const originalText = target.innerText;
+                        target.innerText = '已复制!';
+                        setTimeout(() => { target.innerText = originalText; }, 2000);
+                    });
+                });
+
+                historyList.appendChild(el);
+            });
+        }
+
+        if (generateBtn) {
+            generateBtn.addEventListener('click', () => {
+                if (!targetUrlInput) return;
+                const url = targetUrlInput.value.trim();
+                if (!url) return;
+
+                let validUrl = url;
+                if (!/^https?:\/\//i.test(validUrl)) {
+                    validUrl = 'https://' + validUrl;
+                }
+
+                const encoded = encodeZeroWidth(validUrl);
+                
+                history.unshift({
+                    url: validUrl,
+                    encoded: encoded,
+                    timestamp: Date.now()
+                });
+
+                if (history.length > 10) {
+                    history = history.slice(0, 10);
+                }
+
+                localStorage.setItem('zwLinkHistory', JSON.stringify(history));
+                
+                targetUrlInput.value = '';
+                renderHistory();
+            });
+        }
+
+        if (clearHistoryBtn) {
+            clearHistoryBtn.addEventListener('click', () => {
+                history = [];
+                localStorage.removeItem('zwLinkHistory');
+                renderHistory();
+            });
+        }
+
+        renderHistory();
+    });
+  </script>
+</MainGridLayout>

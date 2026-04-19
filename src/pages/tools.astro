@@ -20,8 +20,6 @@ import { Icon } from "astro-icon/components";
       {tools.map((tool, index) => (
         <a 
           href={tool.link} 
-          target="_blank" 
-          rel="noopener noreferrer" 
           class={`flex items-start py-6 transition-colors hover:bg-black/5 dark:hover:bg-white/5 px-4 -mx-4 rounded-xl ${index !== tools.length - 1 ? 'border-b border-black/5 dark:border-white/5' : ''}`}
         >
           <div class="flex items-center justify-center mt-1 mr-4">
