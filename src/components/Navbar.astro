@@ -140,9 +140,10 @@ if (document.readyState === 'loading') {
 }
 </script>}
 
-<style>
-  .btn-plain.scale-animation.rounded-lg.h-11.active\:scale-90.w-11,
-  .relative.btn-plain.scale-animation.rounded-lg.h-11.w-11.active\:scale-90 {
-    display: none;
+<style is:global>
+  /* 隐藏特定按钮，同时保留移动端汉堡菜单 (#nav-menu-switch) 和搜索按钮 */
+  #display-settings-switch,
+  #scheme-switch {
+    display: none !important;
   }
 </style>
