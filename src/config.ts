@@ -58,21 +58,24 @@ export const navBarConfig: NavBarConfig = {
 		},
 
 		{
-			name: "统计",
-			url: "https://072189.xyz/umami", // Internal links should not include the base path, as it is automatically added
-			external: true, // Show an external link icon and will open in a new tab
-		},
-
-		{
-			name: "流量",
-			url: "https://eo.wudarensheng.top/", // Internal links should not include the base path, as it is automatically added
-			external: true, // Show an external link icon and will open in a new tab
-		},
-
-		{
-			name: "监控",
-			url: "https://uptime.wudarensheng.top/", // Internal links should not include the base path, as it is automatically added
-			external: true, // Show an external link icon and will open in a new tab
+			name: "监测",
+			children: [
+				{
+					name: "统计",
+					url: "https://072189.xyz/umami",
+					external: true,
+				},
+				{
+					name: "流量",
+					url: "https://eo.wudarensheng.top/",
+					external: true,
+				},
+				{
+					name: "监控",
+					url: "https://uptime.wudarensheng.top/",
+					external: true,
+				},
+			],
 		},
 	],
 };
