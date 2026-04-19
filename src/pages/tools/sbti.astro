@@ -1,0 +1,97 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<MainGridLayout title="SBTI人格测试" description="看看你是什么神人人格">
+  <!-- Header -->
+  <div class="card-base p-6 mb-6">
+    <div class="flex items-center mb-2">
+      <Icon name="material-symbols:psychology-rounded" class="text-3xl mr-3 text-blue-500" />
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">SBTI 人格测试</h1>
+    </div>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 mb-2">
+      看看你是什么神人人格，快来测测你的专属属性吧！
+    </p>
+  </div>
+
+  <div class="card-base p-6 min-h-[300px]">
+    <!-- 第一层选择：原版 / 魔改版 -->
+    <div id="version-selection" class="transition-opacity duration-300">
+      <h2 class="text-xl font-bold mb-6 text-gray-900 dark:text-white">选择测试版本</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- 原版 -->
+        <button id="btn-original" class="relative group flex flex-col items-start bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all duration-300 hover:shadow-lg hover:border-blue-500 text-left w-full">
+          <div class="flex items-center mb-3">
+            <Icon name="material-symbols:history-edu-rounded" class="text-3xl text-blue-500 mr-3" />
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">原版测试</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">体验最原汁原味的 SBTI 神人人格测试。</p>
+        </button>
+
+        <!-- 魔改版 -->
+        <button onclick="alert('魔改版暂未上线，敬请期待！')" class="relative group flex flex-col items-start bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all duration-300 hover:shadow-lg hover:border-purple-500 text-left w-full">
+          <div class="flex items-center mb-3">
+            <Icon name="material-symbols:edit-square-outline-rounded" class="text-3xl text-purple-500 mr-3" />
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">魔改版测试</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">基于原版改编，包含更多有趣的梗和题目。（建设中）</p>
+        </button>
+      </div>
+    </div>
+
+    <!-- 第二层选择：原版来源选择 -->
+    <div id="source-selection" class="hidden transition-opacity duration-300">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">选择原版测试来源</h2>
+        <button id="btn-back" class="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors flex items-center">
+          <Icon name="material-symbols:arrow-back-rounded" class="mr-1 text-lg" /> 返回上一级
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- 原站点 -->
+        <a href="https://www.bilibili.com/blackboard/era/WijKT2bWuCJWPg8B.html" target="_blank" rel="noopener noreferrer" class="relative group block bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all duration-300 hover:shadow-lg hover:border-pink-500 text-left w-full">
+          <div class="flex items-center mb-3">
+            <Icon name="material-symbols:public" class="text-3xl text-pink-500 mr-3" />
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">原站点</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">跳转至 Bilibili 官方活动页面进行测试。</p>
+        </a>
+
+        <!-- 本站镜像 -->
+        <button onclick="alert('本站镜像暂未部署，敬请期待！')" class="relative group flex flex-col items-start bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all duration-300 hover:shadow-lg hover:border-blue-500 text-left w-full">
+          <div class="flex items-center mb-3">
+            <Icon name="material-symbols:dns" class="text-3xl text-blue-500 mr-3" />
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">本站镜像</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">在本站提供的镜像页面进行测试，加载更稳定。（建设中）</p>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const versionSelection = document.getElementById('version-selection');
+      const sourceSelection = document.getElementById('source-selection');
+      const btnOriginal = document.getElementById('btn-original');
+      const btnBack = document.getElementById('btn-back');
+
+      if (btnOriginal && versionSelection && sourceSelection) {
+        btnOriginal.addEventListener('click', () => {
+          versionSelection.classList.add('hidden');
+          sourceSelection.classList.remove('hidden');
+        });
+      }
+
+      if (btnBack && versionSelection && sourceSelection) {
+        btnBack.addEventListener('click', () => {
+          sourceSelection.classList.add('hidden');
+          versionSelection.classList.remove('hidden');
+        });
+      }
+    });
+  </script>
+</MainGridLayout>
