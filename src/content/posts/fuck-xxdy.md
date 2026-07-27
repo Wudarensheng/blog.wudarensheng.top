@@ -89,7 +89,7 @@ oh my god。这就是传说中的清北道远学习机吗，有点高级啊，�
 
 当天晚上，我在看B站的时候，发现这么一条评论（详见   https://www.bilibili.com/video/BV1ffRjBEEnt/           ：
 
-![](../../assets/images/posts/fuck-xxdy-1.png)
+![](../../assets/images/posts/fuck-xxdy-1.PNG)
 
 我去，还有这操作，我赶紧打开手机验证，居然是真的！！！！！！！！！那么，厂商嘛，嘿嘿嘿。。。
 
