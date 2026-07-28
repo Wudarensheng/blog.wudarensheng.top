@@ -140,10 +140,10 @@ const bannerOffset =
         class="w-full h-full object-cover"
         loading="eager"
       />
-      <div class="absolute inset-0 bg-black/30 dark:bg-black/50"></div>
-    </div>
+      <div class="absolute inset-0 bg-white/40 dark:bg-black/50"></div>
+  </div>
 
-    <ConfigCarrier></ConfigCarrier>
+  <ConfigCarrier></ConfigCarrier>
     <slot />
 
     <!-- increase the page height during page transition to prevent the scrolling animation from jumping -->
@@ -169,11 +169,11 @@ const bannerOffset =
 @layer components {
   /* 全局根变量回退（如果你在其他地方已有 variables.styl 可以删除这段或改为更合适的值） */
   :root {
-    /* 光模式卡片背景（半透明） */
-    --card-bg: rgba(23, 23, 23, 0.60);
+    /* 亮色模式卡片背景（半透明白色） */
+    --card-bg: rgba(255, 255, 255, 0.7);
   }
   :root.dark {
-    /* 暗模式卡片背景（半透明） */
+    /* 暗色模式卡片背景（半透明深色） */
     --card-bg: rgba(23, 23, 23, 0.60);
   }
 
