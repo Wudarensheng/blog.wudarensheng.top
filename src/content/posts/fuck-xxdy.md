@@ -1,6 +1,6 @@
 ---
 title: 亿不小心破解了清北道远学习机
-published: 1145-01-04
+published: 2026-07-30
 description: '这集神了'
 image: ''
 tags: [破解, 折腾, 研究]
